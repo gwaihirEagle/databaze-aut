@@ -1,0 +1,57 @@
+# Modify the code to update the DB schema diagram.
+# To reset the sample schema, replace everything with
+# two dots ('..' - without quotes).
+
+manufacturers
+-
+id_manufacturer PK int
+name varchar
+
+cars
+-
+id_car PK int
+id_manufacturer int FK >- manufacturers.id_manufacturer
+model varchar
+prod_year int
+type varchar
+color varchar
+price int
+day_price int
+
+customers
+-
+id_customer PK int
+name varchar
+surname varchar
+address varchar
+phone int
+
+rents
+-
+id PK int
+id_customer int FK >- customers.id_customer
+id_car int FK >- cars.id_car
+id_employee int FK >- employees.id
+date_from date
+date_to date
+
+comments
+-
+id_comment int 
+id_car int FK >- cars.id_car
+id_visitor int FK >- visitors.id_visitor
+text_comment text
+
+employees
+-
+id PK int
+name varchar
+surname varchar
+salary int
+
+visitors
+-
+id_visitor PK int
+name varchar
+surname varchar
+email varchar

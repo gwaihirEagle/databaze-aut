@@ -1,0 +1,70 @@
+CREATE TABLE public.manufacturers (
+    "id_manufacturer" integer NOT NULL ,
+    name character varying NOT NULL ,
+    CONSTRAINT pk_manufacturers PRIMARY KEY ("id_manufacturer")
+);
+
+CREATE TABLE public.cars (
+    "id_car" integer  NOT NULL ,
+    "id_manufacturer" integer  NOT NULL ,
+    "model" character varying  NOT NULL ,
+    "prod_year" integer  NOT NULL ,
+    "type" character varying  NOT NULL ,
+    "color" character varying  NOT NULL ,
+    "price" integer  NOT NULL ,
+    "day_price" integer  NOT NULL ,
+    CONSTRAINT "pk_cars" PRIMARY KEY ("id_car")
+);
+
+CREATE TABLE public.customers (
+    "id_customer" integer  NOT NULL ,
+    "name" character varying  NOT NULL ,
+    "surname" character varying  NOT NULL ,
+    "address" character varying  NOT NULL ,
+    "phone" integer  NOT NULL ,
+    CONSTRAINT "pk_customers" PRIMARY KEY ("id_customer")
+);
+
+CREATE TABLE public.rents (
+    "id" integer  NOT NULL ,
+    "id_customer" integer  NOT NULL ,
+    "id_car" integer  NOT NULL ,
+    "id_employee" integer  NOT NULL ,
+    "date_from" date  NOT NULL ,
+    "date_to" date  NOT NULL ,
+    CONSTRAINT "pk_rents" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "comments" (
+    "id_comment" integer  NOT NULL ,
+    "id_car" integer  NOT NULL ,
+    "id_visitor" integer  NOT NULL ,
+    "text_comment" text  NOT NULL );
+
+CREATE TABLE public.employees (
+    "id" integer  NOT NULL ,
+    "salary" integer  NOT NULL ,
+    "name" character varying  NOT NULL ,
+    "surname" character varying  NOT NULL ,
+    CONSTRAINT "pk_employees" PRIMARY KEY ("id")
+);
+
+CREATE TABLE public.visitors (
+    "id_visitor" integer  NOT NULL ,
+    "name" character varying  NOT NULL ,
+    "surname" character varying  NOT NULL ,
+    "email" character varying  NOT NULL ,
+    CONSTRAINT "pk_visitors" PRIMARY KEY ("id_visitor")
+);
+
+ALTER TABLE "cars" ADD CONSTRAINT "fk_cars_id_manufacturer" FOREIGN KEY("id_manufacturer") REFERENCES "manufacturers" ("id_manufacturer");
+
+ALTER TABLE "rents" ADD CONSTRAINT "fk_rents_id_customer" FOREIGN KEY("id_customer") REFERENCES "customers" ("id_customer");
+
+ALTER TABLE "rents" ADD CONSTRAINT "fk_rents_id_car" FOREIGN KEY("id_car") REFERENCES "cars" ("id_car");
+
+ALTER TABLE "rents" ADD CONSTRAINT "fk_rents_id_employee" FOREIGN KEY("id_employee") REFERENCES "employees" ("id");
+
+ALTER TABLE "comments" ADD CONSTRAINT "fk_comments_id_car" FOREIGN KEY("id_car") REFERENCES "cars" ("id_car");
+
+ALTER TABLE "comments" ADD CONSTRAINT "fk_comments_id_visitor" FOREIGN KEY("id_visitor") REFERENCES "visitors" ("id_visitor");

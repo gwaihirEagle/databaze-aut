@@ -1,0 +1,61 @@
+SELECT o.id_customer,o.model,MAX(vypujcek) AS maxvyp
+FROM
+(SELECT cc.id_customer,c.model,COUNT(m.name) AS vypujcek
+FROM manufacturers AS m
+JOIN cars AS c ON m.id_manufacturer = c.id_manufacturer
+JOIN rents AS r ON c.id_car = r.id_car
+JOIN customers AS cc ON r.id_customer = cc.id_customer
+GROUP BY cc.id_customer,c.model) AS o
+GROUP BY o.id_customer,o.model
+ORDER BY o.id_customer;
+
+
+
+(SELECT cc.id_customer,c.model,COUNT(m.name) AS vypujcek
+FROM manufacturers AS m
+JOIN cars AS c ON m.id_manufacturer = c.id_manufacturer
+JOIN rents AS r ON c.id_car = r.id_car
+JOIN customers AS cc ON r.id_customer = cc.id_customer
+GROUP BY cc.id_customer,c.model)
+ORDER BY cc.id_customer;
+
+----
+
+SELECT o.id_customer, o.model, o.vypujcek
+FROM
+(SELECT cc.id_customer,c.model,COUNT(m.name) AS vypujcek
+FROM manufacturers AS m
+JOIN cars AS c ON m.id_manufacturer = c.id_manufacturer
+JOIN rents AS r ON c.id_car = r.id_car
+JOIN customers AS cc ON r.id_customer = cc.id_customer
+GROUP BY cc.id_customer,c.model
+ORDER BY cc.id_customer) as o;
+WHERE o.vypujcek = (select MAX(o.vypujcek) FROM o oo where oo.id_customer = o.id_customer);
+
+
+---
+SELECT o.id_customer, o.model, o.vypujcek
+FROM
+(SELECT cc.id_customer,c.model,COUNT(m.name) AS vypujcek
+FROM manufacturers AS m
+JOIN cars AS c ON m.id_manufacturer = c.id_manufacturer
+JOIN rents AS r ON c.id_car = r.id_car
+JOIN customers AS cc ON r.id_customer = cc.id_customer
+GROUP BY cc.id_customer,c.model
+ORDER BY cc.id_customer) as o
+GROUP BY o.id_customer,o.model,o.vypujcek
+HAVING o.vypujcek = MAX(o.vypujcek);
+
+SELECT o.id_customer, o.model, o.vypujcek
+FROM
+(SELECT cc.id_customer,c.model,COUNT(m.name) AS vypujcek
+FROM manufacturers AS m
+JOIN cars AS c ON m.id_manufacturer = c.id_manufacturer
+JOIN rents AS r ON c.id_car = r.id_car
+JOIN customers AS cc ON r.id_customer = cc.id_customer
+GROUP BY cc.id_customer,c.model
+ORDER BY cc.id_customer) as o
+JOIN (select o.id_customer,o.model, o.vypujcek,max(o.vypujcek) from o group by o.id_customer) as maximum on maxiumum.id_customer = o.id_customer and maximum.vypujcek = o.vypujcek;
+
+  
+

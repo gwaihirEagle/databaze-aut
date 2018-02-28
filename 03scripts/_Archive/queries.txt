@@ -1,0 +1,69 @@
+všechny auta, které má pùjèené zákazník s ID = 3.
+
+SELECT id_customer,model,date_from AS rent_from, date_to AS rent_to FROM rents r JOIN cars c ON r.id_car = c.id_car WHERE r.id_customer = 3;
+
+všechny výpùjèky auta s ID = 2
+
+SELECT id_customer,model,date_from AS rent_from, date_to AS rent_to FROM rents r JOIN cars c ON r.id_car = c.id_car WHERE r.id_car = 2;
+
+zamìstnance, který má nejvìtší plat
+
+SELECT id,name,surname,salary FROM employees WHERE salary = (SELECT MAX(salary) FROM employees);
+-----------------
+SELECT MAX(salary) AS Max_salary FROM employees;
+SELECT id, name, surname, salary FROM employees ORDER BY employees.salary DESC;
+SELECT id, name, surname, salary FROM employees GROUP BY id HAVING salary = MAX(salary) ORDER BY salary DESC;
+SELECT id, name,salary FROM employees WHERE EXISTS (SELECT MAX(Salary) FROM employees );
+
+všechny výpùjèky auta s ID = 2, které jsou platné od data XX.XX.XXXX do data YY.YY.YYYY
+
+SELECT id_car,date_from,date_to FROM rents WHERE id_car = 2 AND date_from > '01-01-2018' AND date_to < '31-01-2018';
+
+poèet aut od výrobce s ID = 1.
+SELECT m.id_manufacturer, m.name, count as Èetnost FROM cars c JOIN manufacturers m ON c.id_manufacturer = m.id_manufacturer WHERE c.id_manufacturer = 1 GROUP BY m.id_manufacturer;
+—
+SELECT m.id_manufacturer, m.name, c.model FROM cars c JOIN manufacturers m ON c.id_manufacturer = m.id_manufacturer WHERE c.id_manufacturer = 2;
+
+všechny pøíspìvky k autu s ID = 1.
+
+SELECT id_car, text_comment FROM comments WHERE id_car = 1;
+
+všechny zákazníky a znaèku aut, které si zákazníci pùjèili
+
+SELECT cc.name,cc.surname,m.name,c.model,COUNT(c.model) AS vypujcek
+FROM manufacturers AS m
+JOIN cars AS c ON m.id_manufacturer = c.id_manufacturer
+JOIN rents AS r ON c.id_car = r.id_car
+JOIN customers AS cc ON r.id_customer = cc.id_customer
+GROUP BY c.model,cc.name,cc.surname,m.name ORDER BY COUNT(c.model) DESC;
+–
+SELECT * FROM manufacturers mm JOIN
+(SELECT * FROM cars cc JOIN
+(SELECT * FROM customers c JOIN rents r ON c.id_customer = r.id_customer) AS a
+ON a.id_car = cc.id_car ) as b
+ON mm.id_manufacturer = b.id_manufacturer
+–
+SELECT * FROM manufacturers mm JOIN
+(SELECT * FROM cars cc JOIN
+(SELECT * FROM customers c JOIN rents r ON c.id_customer = r.id_customer) AS a
+ON a.id_car = cc.id_car ) as b
+ON mm.id_manufacturer = b.id_manufacturer
+
+poèet existujících výpùjèek pro jednotlivá auta
+
+SELECT model, COUNT(date_from) AS ÈetnostVýpùjèek FROM rents r JOIN cars c ON r.id_car = c.id_car GROUP BY model;
+
+poèet výpùjèek, které realizoval zamìstnanec s ID = 2.
+SELECT model, COUNT(date_from) AS ÈetnostVýpùjèek FROM rents r JOIN cars c ON r.id_car = c.id_car WHERE id_employee = 2 GROUP BY model;
+
+všechny zákazníky a znaèku auta, které si zákazník pùjèil nejèastìji
+
+SELECT o.id_customer, MAX(vypujcek)
+FROM
+(SELECT cc.id_customer,c.model,COUNT(m.name) AS vypujcek
+FROM manufacturers AS m
+JOIN cars AS c ON m.id_manufacturer = c.id_manufacturer
+JOIN rents AS r ON c.id_car = r.id_car
+JOIN customers AS cc ON r.id_customer = cc.id_customer
+GROUP BY cc.id_customer,c.model) as o
+GROUP BY o.id_customer;

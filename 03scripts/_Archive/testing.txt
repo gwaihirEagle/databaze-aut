@@ -1,0 +1,34 @@
+SELECT * FROM manufacturers mm JOIN
+(SELECT cc.id_car,cc.id_manufacturer FROM cars cc JOIN
+(SELECT c.id_customer,r.id_car FROM customers c JOIN rents r ON c.id_customer = r.id_customer) AS a
+ON a.id_car = cc.id_car ) as b
+ON mm.id_manufacturer = b.id_manufacturer;
+
+
+
+-------- pokus  view .. nefunguje
+CREATE VIEW custrent AS SELECT c.id_customer,r.id_car FROM customers c JOIN rents r ON c.id_customer = r.id_customer;
+SELECT cc.id_car,cc.id_manufacturer FROM cars cc JOIN custrent ON custrent.id_car = cc.id_car;
+
+--------- funkcni
+SELECT cc.id_customer,cc.name,cc.surname,m.*, c.model
+FROM manufacturers AS m
+LEFT JOIN cars AS c ON m.id_manufacturer = c.id_manufacturer
+LEFT JOIN rents AS r ON c.id_car = r.id_car
+LEFT JOIN customers AS cc ON r.id_car = cc.id_customer;
+
+------ cetnost pujcek dle uzivatele
+SELECT id_customer,COUNT(id_car) AS vypujcek FROM rents GROUP BY id_customer ORDER BY id_customer;
+
+
+-----fcni
+SELECT cc.name,cc.surname,m.name,c.model,COUNT(c.model) AS vypujcek
+FROM manufacturers AS m
+JOIN cars AS c ON m.id_manufacturer = c.id_manufacturer
+JOIN rents AS r ON c.id_car = r.id_car
+JOIN customers AS cc ON r.id_customer = cc.id_customer
+GROUP BY c.model,cc.name,cc.surname,m.name;
+
+-----
+
+
